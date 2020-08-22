@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Remove uclamp throttling on suspend/hibernate and re-apply on resume.
+# This helps to speed up wakeup time.
+
+case "$1" in
+
+	pre)
+		uclampreset 1024
+		;;
+
+	post)
+		uclampreset
+		;;
+esac
