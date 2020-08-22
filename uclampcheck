@@ -1,0 +1,10 @@
+#!/bin/sh
+
+MAX=${1:-300}
+
+for pid in $(ps -e | awk '{print $1}')
+do
+	uclampset -a -p $pid 2>/dev/null | \
+		grep -B 2 -P "util_max:.*(?<!$MAX)$" && \
+		echo "\t`chrt -p $pid 2>/dev/null | head -n 1`"
+done

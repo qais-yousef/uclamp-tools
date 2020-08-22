@@ -1,0 +1,15 @@
+#!/bin/sh
+
+MAX=${1:-300}
+
+for pid in $(ps -e | awk '{print $1}')
+do
+	SCHED_OTHER=`chrt -p $pid 2>/dev/null | grep -E 'SCHED_OTHER'`
+
+	if [ -n "$SCHED_OTHER" ]; then
+		sudo uclampset -a -p 0 $MAX $pid
+	else
+		echo "Skipping $pid..."
+		echo "\t`chrt -p $pid 2>/dev/null | head -n 1`"
+	fi
+done
