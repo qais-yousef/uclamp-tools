@@ -1,5 +1,8 @@
 #!/bin/sh -e
 
+# Set intel_pstate to passive to enable setting schedutil
+echo passive > /sys/devices/system/cpu/intel_pstate/status
+
 for governor in /sys/devices/system/cpu/cpufreq/policy*/scaling_governor
 do
 	echo schedutil > $governor
@@ -9,6 +12,3 @@ echo 0 > /proc/sys/kernel/sched_util_clamp_min_rt_default
 
 # Throttle all tasks in the system from here onward
 /home/qyousef/utils/uclampreset
-
-# Turbo boost is energy enefficient, disable it
-#echo 1 > /sys/devices/system/cpu/intel_pstate/no_turbo
