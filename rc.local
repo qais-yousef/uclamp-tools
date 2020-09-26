@@ -8,7 +8,15 @@ do
 	echo schedutil > $governor
 done
 
-echo 0 > /proc/sys/kernel/sched_util_clamp_min_rt_default
+RT_BOOST="/proc/sys/kernel/sched_util_clamp_min_rt_default"
+if [ -e $RT_BOOST ]; then
+	echo 0 > $RT_BOOST
+else
+
+	# The above will handle any newly created RT task. This will only handl
+	# existing RT tasks.
+	uclampreset-rt
+fi
 
 # Throttle all tasks in the system from here onward
-/home/qyousef/utils/uclampreset
+uclampreset

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+MIN=${1:-0}
+MAX=${1:-1024}
+
+for pid in $(ps -e | awk '{print $1}')
+do
+	SCHED_RT=`chrt -p $pid 2>/dev/null | grep -E '(SCHED_FIFO|SCHED_RR)'`
+
+	if [ -n "$SCHED_RT" ]; then
+		sudo uclampset -a -p $MIN $MAX $pid
+	else
+		echo "Skipping $pid..."
+		echo "\t`chrt -p $pid 2>/dev/null | head -n 1`"
+	fi
+done
